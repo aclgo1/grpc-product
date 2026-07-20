@@ -11,6 +11,7 @@ import (
 	"github.com/aclgo/product/internal/product/repository"
 	"github.com/aclgo/product/internal/product/usecase"
 	"github.com/aclgo/product/migrations"
+	"github.com/aclgo/product/pkg/grpc_auth"
 	"github.com/aclgo/product/pkg/postgres"
 	"github.com/aclgo/product/proto"
 	"google.golang.org/grpc"
@@ -44,12 +45,18 @@ func main() {
 
 	svc := service.NewserviceGRPC(productUC)
 
+	auth := grpc_auth.NewGrpcAuth(cfg)
+
+	opts := []grpc.ServerOption{
+		grpc.ChainUnaryInterceptor(auth.AuthInterceptor),
+	}
+
+	server := grpc.NewServer(opts...)
+
 	listen, err := net.Listen("tcp", ":"+cfg.ServerPort)
 	if err != nil {
 		log.Fatalf("net.Listen: %v", err)
 	}
-
-	server := grpc.NewServer()
 
 	proto.RegisterProductServiceServer(server, svc)
 

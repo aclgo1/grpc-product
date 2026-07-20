@@ -3,12 +3,13 @@ package config
 import "github.com/spf13/viper"
 
 type Config struct {
-	Path           string
-	ApiVersion     string `mapstructure:"API_VERSION"`
-	ServerPort     string `mapstructure:"SERVER_PORT"`
-	DatabaseDriver string `mapstructure:"DATABASE_DRIVER"`
-	DatabaseUrl    string `mapstructure:"DATABASE_URL"`
-	MigrationRunning bool `mapstructure:"MIGRATION_RUN"`
+	Path             string
+	ApiVersion       string `mapstructure:"API_VERSION"`
+	ServerPort       string `mapstructure:"SERVER_PORT"`
+	DatabaseDriver   string `mapstructure:"DATABASE_DRIVER"`
+	DatabaseUrl      string `mapstructure:"DATABASE_URL"`
+	MigrationRunning bool   `mapstructure:"MIGRATION_RUN"`
+	PathPublicPem    string `mapstructure:"PATH_PUBLIC_PEM"`
 }
 
 func NewConfig(path string) *Config {
