@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"math"
 
 	"github.com/aclgo/product/models"
 	"github.com/jmoiron/sqlx"
@@ -59,20 +60,43 @@ func (p *postgresRepository) Find(ctx context.Context, pf *models.ParamsFind) (*
 	return &result, nil
 }
 
-func (p *postgresRepository) FindAllProducts(ctx context.Context,
-) ([]*models.ParamFindAllProduct, error) {
+func (p *postgresRepository) FindAllProducts(ctx context.Context, pagination *models.Pagination,
+) (*models.ParamFindAllProducts, error) {
+
+	const queryTotalItems = `
+	SELECT COUNT(*) 
+	FROM products p 
+	WHERE NOT EXISTS (
+		SELECT 1 
+		FROM grpc_orders go 
+		WHERE p.product_id = ANY(go.products_ids)
+	);
+`
+	var totalItems int
+
+	err := p.db.GetContext(ctx, &totalItems, queryTotalItems)
+	if err != nil {
+		return nil, err
+	}
+
+	if totalItems == 0 {
+		return nil, nil
+	}
+
+	pages := int(math.Ceil(float64(totalItems) / float64(pagination.Limit)))
+
 	//MODE ONE
 	//	const query = `SELECT p.* FROM products p LEFT JOIN grpc_orders go ON
 	//	p.product_id = go.product_id WHERE go.product_id IS NULL`
 
 	//MODE TWO
 	const query = `SELECT * FROM products p 
-    WHERE NOT EXISTS (SELECT 1 FROM grpc_orders go WHERE p.product_id = ANY(go.products_ids));`
+    WHERE NOT EXISTS (SELECT 1 FROM grpc_orders go WHERE p.product_id = ANY(go.products_ids)) ORDER BY p.product_id DESC
+	LIMIT $1 OFFSET $2;`
 
 	//MODE THREE
 	// `SELECT * FROM products p WHERE NOT EXISTS (SELECT 1
 	// FROM grpc_orders goWHERE go.products_ids @> ARRAY[p.product_id])`
-
 	rows, err := p.db.QueryxContext(ctx, query)
 	if err != nil {
 		return nil, fmt.Errorf("p.db.QueryxContext: %w", err)
@@ -102,7 +126,13 @@ func (p *postgresRepository) FindAllProducts(ctx context.Context,
 		return nil, fmt.Errorf("rows.Err: %w", err)
 	}
 
-	return products, nil
+	resp := models.ParamFindAllProducts{
+		Products:   products,
+		TotalItems: totalItems,
+		TotalPages: pages,
+	}
+
+	return &resp, nil
 }
 
 func (p *postgresRepository) Update(ctx context.Context, pu *models.ParamsUpdate) (*models.ParamsUpdateResponse, error) {

@@ -86,28 +86,45 @@ func (s *serviceGRPC) Find(ctx context.Context, req *proto.ProductFindRequest) (
 
 func (s *serviceGRPC) FindAll(ctx context.Context, req *proto.ProductFindAllRequest,
 ) (*proto.ProductFindAllResponse, error) {
-	var products proto.ProductFindAllResponse
 
-	findall, err := s.productUC.FindAllProducts(ctx)
+	p := product.Pagination{
+		Page:  int(req.Page),
+		Limit: int(req.Limit),
+	}
+
+	if err := p.Validate(); err != nil {
+		return nil, err
+	}
+
+	all, err := s.productUC.FindAllProducts(ctx, &p)
 	if err != nil {
-		return nil, fmt.Errorf("s.productUC.FindAllProducts: %w", err)
+		return nil, err
 	}
 
-	for i := range findall {
-		product := proto.Product{
-			Id:          findall[i].Id,
-			Name:        findall[i].Name,
-			Price:       findall[i].Price,
-			Quantity:    findall[i].Quantity,
-			Description: findall[i].Description,
-			CreatedAt:   timestamppb.New(findall[i].Created_At),
-			UpdatedAt:   timestamppb.New(findall[i].Updated_At),
+	out := make([]*proto.Product, len(all.Products))
+
+	for i := range all.Products {
+		pdt := all.Products[i]
+		out[i] = &proto.Product{
+			Id:          pdt.Id,
+			Name:        pdt.Name,
+			Price:       pdt.Price,
+			Quantity:    pdt.Quantity,
+			Description: pdt.Description,
+			CreatedAt:   timestamppb.New(pdt.Created_At),
+			UpdatedAt:   timestamppb.New(pdt.Updated_At),
 		}
-
-		products.Products = append(products.Products, &product)
 	}
 
-	return &products, nil
+	resp := proto.ProductFindAllResponse{
+		Products:   out,
+		Page:       int32(all.Page),
+		Limit:      int32(all.Limit),
+		TotalItems: int32(all.TotalItems),
+		TotalPages: int32(all.TotalPages),
+	}
+
+	return &resp, nil
 }
 
 func (s *serviceGRPC) Update(ctx context.Context, req *proto.ProductUpdateRequest) (*proto.ProductUpdateResponse, error) {

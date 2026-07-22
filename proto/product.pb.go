@@ -316,6 +316,8 @@ func (x *ProductFindResponse) GetProduct() *Product {
 
 type ProductFindAllRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
+	Page          int32                  `protobuf:"varint,1,opt,name=page,proto3" json:"page,omitempty"`
+	Limit         int32                  `protobuf:"varint,2,opt,name=limit,proto3" json:"limit,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -350,9 +352,27 @@ func (*ProductFindAllRequest) Descriptor() ([]byte, []int) {
 	return file_product_proto_rawDescGZIP(), []int{5}
 }
 
+func (x *ProductFindAllRequest) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *ProductFindAllRequest) GetLimit() int32 {
+	if x != nil {
+		return x.Limit
+	}
+	return 0
+}
+
 type ProductFindAllResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Products      []*Product             `protobuf:"bytes,1,rep,name=products,proto3" json:"products,omitempty"`
+	Page          int32                  `protobuf:"varint,2,opt,name=page,proto3" json:"page,omitempty"`
+	Limit         int32                  `protobuf:"varint,3,opt,name=limit,proto3" json:"limit,omitempty"`
+	TotalPages    int32                  `protobuf:"varint,4,opt,name=total_pages,json=totalPages,proto3" json:"total_pages,omitempty"`
+	TotalItems    int32                  `protobuf:"varint,5,opt,name=total_items,json=totalItems,proto3" json:"total_items,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -392,6 +412,34 @@ func (x *ProductFindAllResponse) GetProducts() []*Product {
 		return x.Products
 	}
 	return nil
+}
+
+func (x *ProductFindAllResponse) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *ProductFindAllResponse) GetLimit() int32 {
+	if x != nil {
+		return x.Limit
+	}
+	return 0
+}
+
+func (x *ProductFindAllResponse) GetTotalPages() int32 {
+	if x != nil {
+		return x.TotalPages
+	}
+	return 0
+}
+
+func (x *ProductFindAllResponse) GetTotalItems() int32 {
+	if x != nil {
+		return x.TotalItems
+	}
+	return 0
 }
 
 type ProductUpdateRequest struct {
@@ -627,10 +675,18 @@ const file_product_proto_rawDesc = "" +
 	"\x12ProductFindRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"9\n" +
 	"\x13ProductFindResponse\x12\"\n" +
-	"\aproduct\x18\x01 \x01(\v2\b.ProductR\aproduct\"\x17\n" +
-	"\x15ProductFindAllRequest\">\n" +
+	"\aproduct\x18\x01 \x01(\v2\b.ProductR\aproduct\"A\n" +
+	"\x15ProductFindAllRequest\x12\x12\n" +
+	"\x04page\x18\x01 \x01(\x05R\x04page\x12\x14\n" +
+	"\x05limit\x18\x02 \x01(\x05R\x05limit\"\xaa\x01\n" +
 	"\x16ProductFindAllResponse\x12$\n" +
-	"\bproducts\x18\x01 \x03(\v2\b.ProductR\bproducts\"\x8e\x01\n" +
+	"\bproducts\x18\x01 \x03(\v2\b.ProductR\bproducts\x12\x12\n" +
+	"\x04page\x18\x02 \x01(\x05R\x04page\x12\x14\n" +
+	"\x05limit\x18\x03 \x01(\x05R\x05limit\x12\x1f\n" +
+	"\vtotal_pages\x18\x04 \x01(\x05R\n" +
+	"totalPages\x12\x1f\n" +
+	"\vtotal_items\x18\x05 \x01(\x05R\n" +
+	"totalItems\"\x8e\x01\n" +
 	"\x14ProductUpdateRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x14\n" +

@@ -13,7 +13,7 @@ import (
 type Product interface {
 	Insert(ctx context.Context, pi *ParamsInsert) (*ParamsInsertOutput, error)
 	Find(ctx context.Context, pf *ParamsFind) (*ParamsFindOutput, error)
-	FindAllProducts(ctx context.Context) ([]*ParamFindAllProductOutput, error)
+	FindAllProducts(ctx context.Context, pagination *Pagination) (*ParamsFindAllProductsOutput, error)
 	Update(ctx context.Context, pu *ParamsUpdate) (*ParamsUpdateOutput, error)
 	Delete(ctx context.Context, pd *ParamsDelete) error
 }
@@ -21,7 +21,8 @@ type Product interface {
 type Repository interface {
 	Insert(ctx context.Context, ps *models.ParamsInsert) (*models.ParamsInsertResponse, error)
 	Find(ctx context.Context, pf *models.ParamsFind) (*models.ParamsFindResult, error)
-	FindAllProducts(ctx context.Context) ([]*models.ParamFindAllProduct, error)
+	FindAllProducts(ctx context.Context, pagination *models.Pagination,
+	) (*models.ParamFindAllProducts, error)
 	Update(ctx context.Context, pu *models.ParamsUpdate) (*models.ParamsUpdateResponse, error)
 	Delete(ctx context.Context, pd *models.ParamsDelete) error
 }
@@ -103,6 +104,14 @@ type ParamFindAllProductOutput struct {
 	Updated_At  time.Time
 }
 
+type ParamsFindAllProductsOutput struct {
+	Products   []*ParamFindAllProductOutput
+	Page       int
+	Limit      int
+	TotalItems int
+	TotalPages int
+}
+
 type ParamsUpdate struct {
 	Id          string
 	Name        string
@@ -149,4 +158,29 @@ func (p *ParamsDelete) Validate() error {
 	}
 
 	return nil
+}
+
+type Pagination struct {
+	Page  int
+	Limit int
+}
+
+func (p *Pagination) Validate() error {
+	if p.Limit < 0 {
+		p.Limit = 20
+	}
+
+	if p.Limit > 100 {
+		p.Limit = 100
+	}
+
+	if p.Page <= 0 {
+		p.Page = 0
+	}
+
+	return nil
+}
+
+func (p *Pagination) GetOffset() int {
+	return (p.Page - 1) * p.Limit
 }

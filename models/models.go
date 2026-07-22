@@ -46,6 +46,12 @@ type ParamFindAllProduct struct {
 	Updated_At  time.Time `db:"updated_at"`
 }
 
+type ParamFindAllProducts struct {
+	Products   []*ParamFindAllProduct
+	TotalItems int
+	TotalPages int
+}
+
 type ParamsUpdate struct {
 	Id          string
 	Name        string
@@ -67,4 +73,9 @@ type ParamsUpdateResponse struct {
 
 type ParamsDelete struct {
 	Id string
+}
+
+type Pagination struct {
+	Limit  int
+	Offset int
 }

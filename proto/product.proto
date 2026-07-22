@@ -35,11 +35,17 @@ message ProductFindResponse {
 }
 
 message ProductFindAllRequest {
-
+    int32 page = 1;
+    int32 limit = 2;
 }
 
 message ProductFindAllResponse {
     repeated Product products = 1;
+    int32 page = 2;
+    int32 limit = 3;
+    int32 total_pages  = 4;
+    int32 total_items = 5;
+
 }
 
 message ProductUpdateRequest {

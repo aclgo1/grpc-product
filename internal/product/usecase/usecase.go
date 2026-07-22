@@ -32,19 +32,19 @@ func (p *productUC) Insert(ctx context.Context, pi *product.ParamsInsert) (*prod
 		Updated_At:  time.Now(),
 	}
 
-	result, err := p.repository.Insert(ctx, &pm)
+	pdt, err := p.repository.Insert(ctx, &pm)
 	if err != nil {
 		return nil, fmt.Errorf("p.repository.Insert: %w", err)
 	}
 
 	pout := product.ParamsInsertOutput{
-		Id:          result.Id,
-		Name:        result.Name,
-		Price:       result.Price,
-		Quantity:    result.Quantity,
-		Description: result.Description,
-		Created_At:  result.Created_At,
-		Updated_At:  result.Updated_At,
+		Id:          pdt.Id,
+		Name:        pdt.Name,
+		Price:       pdt.Price,
+		Quantity:    pdt.Quantity,
+		Description: pdt.Description,
+		Created_At:  pdt.Created_At,
+		Updated_At:  pdt.Updated_At,
 	}
 
 	return &pout, nil
@@ -74,30 +74,42 @@ func (p *productUC) Find(ctx context.Context, pf *product.ParamsFind) (*product.
 	return &pout, nil
 }
 
-func (p *productUC) FindAllProducts(ctx context.Context) ([]*product.ParamFindAllProductOutput, error) {
+func (p *productUC) FindAllProducts(ctx context.Context, pagination *product.Pagination) (*product.ParamsFindAllProductsOutput, error) {
 
-	pouts := []*product.ParamFindAllProductOutput{}
+	pm := models.Pagination{
+		Limit:  pagination.Limit,
+		Offset: pagination.GetOffset(),
+	}
 
-	results, err := p.repository.FindAllProducts(ctx)
+	all, err := p.repository.FindAllProducts(ctx, &pm)
 	if err != nil {
-		return nil, fmt.Errorf("p.repository.FindAllProducts: %w", err)
+		return nil, err
 	}
 
-	for _, result := range results {
+	out := make([]*product.ParamFindAllProductOutput, len(all.Products))
 
-		out := product.ParamFindAllProductOutput{
-			Id:          result.Id,
-			Name:        result.Name,
-			Price:       result.Price,
-			Quantity:    result.Quantity,
-			Description: result.Description,
-			Created_At:  result.Created_At,
-			Updated_At:  result.Updated_At,
+	for i := range all.Products {
+		pdt := all.Products[i]
+		out[i] = &product.ParamFindAllProductOutput{
+			Id:          pdt.Id,
+			Name:        pdt.Name,
+			Price:       pdt.Price,
+			Quantity:    pdt.Quantity,
+			Description: pdt.Description,
+			Created_At:  pdt.Created_At,
+			Updated_At:  pdt.Updated_At,
 		}
-		pouts = append(pouts, &out)
 	}
 
-	return pouts, nil
+	resp := product.ParamsFindAllProductsOutput{
+		Products:   out,
+		Page:       pagination.Page,
+		Limit:      pagination.Limit,
+		TotalItems: all.TotalItems,
+		TotalPages: all.TotalPages,
+	}
+
+	return &resp, nil
 }
 
 func (p *productUC) Update(ctx context.Context, pu *product.ParamsUpdate) (*product.ParamsUpdateOutput, error) {
@@ -111,19 +123,19 @@ func (p *productUC) Update(ctx context.Context, pu *product.ParamsUpdate) (*prod
 		Updated_At:  time.Now(),
 	}
 
-	result, err := p.repository.Update(ctx, &pm)
+	pdt, err := p.repository.Update(ctx, &pm)
 	if err != nil {
 		return nil, fmt.Errorf("p.repository.Update: %w", err)
 	}
 
 	pout := product.ParamsUpdateOutput{
-		Id:          result.Id,
-		Name:        result.Name,
-		Price:       result.Price,
-		Quantity:    result.Quantity,
-		Description: result.Description,
-		Created_At:  result.Created_At,
-		Updated_At:  result.Updated_At,
+		Id:          pdt.Id,
+		Name:        pdt.Name,
+		Price:       pdt.Price,
+		Quantity:    pdt.Quantity,
+		Description: pdt.Description,
+		Created_At:  pdt.Created_At,
+		Updated_At:  pdt.Updated_At,
 	}
 
 	return &pout, nil
