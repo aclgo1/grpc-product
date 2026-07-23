@@ -10,8 +10,9 @@ message Product {
     double price = 3;
     int64 quantity = 4;
     string description = 5;
-    google.protobuf.Timestamp created_at = 6;
-    google.protobuf.Timestamp updated_at = 7;
+    bool has_ordered = 6;
+    google.protobuf.Timestamp created_at = 7;
+    google.protobuf.Timestamp updated_at = 8;
 }
 
 message ProductInsertRequest {
@@ -54,6 +55,7 @@ message ProductUpdateRequest {
     double price = 3;
     int64 quantity = 4;
     string description = 5;
+    bool has_ordered = 6;
 }
 
 message ProductUpdateResponse {

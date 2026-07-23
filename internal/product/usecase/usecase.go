@@ -67,6 +67,7 @@ func (p *productUC) Find(ctx context.Context, pf *product.ParamsFind) (*product.
 		Price:       find.Price,
 		Quantity:    find.Quantity,
 		Description: find.Description,
+		HasOrdered:  find.HasOrdered,
 		Created_At:  find.Created_At,
 		Updated_At:  find.Updated_At,
 	}
@@ -96,6 +97,7 @@ func (p *productUC) FindAllProducts(ctx context.Context, pagination *product.Pag
 			Price:       pdt.Price,
 			Quantity:    pdt.Quantity,
 			Description: pdt.Description,
+			HasOrdered:  pdt.HasOrdered,
 			Created_At:  pdt.Created_At,
 			Updated_At:  pdt.Updated_At,
 		}
@@ -120,6 +122,7 @@ func (p *productUC) Update(ctx context.Context, pu *product.ParamsUpdate) (*prod
 		Price:       pu.Price,
 		Quantity:    pu.Quantity,
 		Description: pu.Description,
+		HasOrdered:  pu.HasOrdered,
 		Updated_At:  time.Now(),
 	}
 
@@ -134,6 +137,7 @@ func (p *productUC) Update(ctx context.Context, pu *product.ParamsUpdate) (*prod
 		Price:       pdt.Price,
 		Quantity:    pdt.Quantity,
 		Description: pdt.Description,
+		HasOrdered:  pdt.HasOrdered,
 		Created_At:  pdt.Created_At,
 		Updated_At:  pdt.Updated_At,
 	}

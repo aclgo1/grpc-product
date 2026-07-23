@@ -47,7 +47,7 @@ func (p *postgresRepository) Insert(ctx context.Context, ps *models.ParamsInsert
 
 }
 func (p *postgresRepository) Find(ctx context.Context, pf *models.ParamsFind) (*models.ParamsFindResult, error) {
-	const sql = `select product_id, name, price, quantity, description, created_at,
+	const sql = `select product_id, name, price, quantity, description,has_ordered, created_at,
 	 updated_at from products where product_id=$1`
 
 	result := models.ParamsFindResult{}
@@ -64,14 +64,9 @@ func (p *postgresRepository) FindAllProducts(ctx context.Context, pagination *mo
 ) (*models.ParamFindAllProducts, error) {
 
 	const queryTotalItems = `
-	SELECT COUNT(*) 
-	FROM products p 
-	WHERE NOT EXISTS (
-		SELECT 1 
-		FROM grpc_orders go 
-		WHERE p.product_id = ANY(go.products_ids)
-	);
-`
+    SELECT COUNT(*) 
+    FROM products p 
+    WHERE p.has_ordered = FALSE;`
 	var totalItems int
 
 	err := p.db.GetContext(ctx, &totalItems, queryTotalItems)
@@ -85,18 +80,12 @@ func (p *postgresRepository) FindAllProducts(ctx context.Context, pagination *mo
 
 	pages := int(math.Ceil(float64(totalItems) / float64(pagination.Limit)))
 
-	//MODE ONE
-	//	const query = `SELECT p.* FROM products p LEFT JOIN grpc_orders go ON
-	//	p.product_id = go.product_id WHERE go.product_id IS NULL`
+	const query = `SELECT * 
+    FROM products p 
+    WHERE p.has_ordered = FALSE
+    ORDER BY p.product_id DESC
+    LIMIT $1 OFFSET $2;`
 
-	//MODE TWO
-	const query = `SELECT * FROM products p 
-    WHERE NOT EXISTS (SELECT 1 FROM grpc_orders go WHERE p.product_id = ANY(go.products_ids)) ORDER BY p.product_id DESC
-	LIMIT $1 OFFSET $2;`
-
-	//MODE THREE
-	// `SELECT * FROM products p WHERE NOT EXISTS (SELECT 1
-	// FROM grpc_orders goWHERE go.products_ids @> ARRAY[p.product_id])`
 	rows, err := p.db.QueryxContext(ctx, query)
 	if err != nil {
 		return nil, fmt.Errorf("p.db.QueryxContext: %w", err)
@@ -113,6 +102,7 @@ func (p *postgresRepository) FindAllProducts(ctx context.Context, pagination *mo
 			&product.Price,
 			&product.Quantity,
 			&product.Description,
+			&product.HasOrdered,
 			&product.Created_At,
 			&product.Updated_At,
 		); err != nil {
@@ -141,11 +131,12 @@ func (p *postgresRepository) Update(ctx context.Context, pu *models.ParamsUpdate
 			"price" = COALESCE(NULLIF($2, 0.0), "price"),
 			"quantity" = COALESCE(NULLIF($3, 0), "quantity"),
 			"description" = COALESCE(NULLIF($4, ''), "description"),
+			"has_ordered" = COALESCE($5, "has_ordered"),
 			"updated_at" = COALESCE(NULLIF($5, '')::timestamptz, "updated_at")
 			WHERE product_id = $6
 			RETURNING "product_id",
 			"name", "price", "quantity",
-			"description", "created_at", "updated_at";`
+			"description", has_ordered, "created_at", "updated_at";`
 
 	result := models.ParamsUpdateResponse{}
 
@@ -155,6 +146,7 @@ func (p *postgresRepository) Update(ctx context.Context, pu *models.ParamsUpdate
 		pu.Price,
 		pu.Quantity,
 		pu.Description,
+		pu.HasOrdered,
 		pu.Updated_At,
 		pu.Id,
 	).StructScan(&result)

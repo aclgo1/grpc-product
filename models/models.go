@@ -18,6 +18,7 @@ type ParamsInsertResponse struct {
 	Price       float64   `db:"price"`
 	Quantity    int64     `db:"quantity"`
 	Description string    `db:"description"`
+	HasOrdered  bool      `db:"has_ordered"`
 	Created_At  time.Time `db:"created_at"`
 	Updated_At  time.Time `db:"updated_at"`
 }
@@ -32,6 +33,7 @@ type ParamsFindResult struct {
 	Price       float64   `db:"price"`
 	Quantity    int64     `db:"quantity"`
 	Description string    `db:"description"`
+	HasOrdered  bool      `db:"has_ordered"`
 	Created_At  time.Time `db:"created_at"`
 	Updated_At  time.Time `db:"updated_at"`
 }
@@ -42,6 +44,7 @@ type ParamFindAllProduct struct {
 	Price       float64   `db:"price"`
 	Quantity    int64     `db:"quantity"`
 	Description string    `db:"description"`
+	HasOrdered  bool      `db:"has_ordered"`
 	Created_At  time.Time `db:"created_at"`
 	Updated_At  time.Time `db:"updated_at"`
 }
@@ -58,6 +61,7 @@ type ParamsUpdate struct {
 	Price       float64
 	Quantity    int64
 	Description string
+	HasOrdered  bool `db:"has_ordered"`
 	Updated_At  time.Time
 }
 
@@ -67,6 +71,7 @@ type ParamsUpdateResponse struct {
 	Price       float64   `db:"price"`
 	Quantity    int64     `db:"quantity"`
 	Description string    `db:"description"`
+	HasOrdered  bool      `db:"has_ordered"`
 	Created_At  time.Time `db:"created_at"`
 	Updated_At  time.Time `db:"updated_at"`
 }

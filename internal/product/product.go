@@ -64,6 +64,7 @@ type ParamsInsertOutput struct {
 	Price       float64
 	Quantity    int64
 	Description string
+	HasOrdered  bool
 	Created_At  time.Time
 	Updated_At  time.Time
 }
@@ -90,6 +91,7 @@ type ParamsFindOutput struct {
 	Price       float64
 	Quantity    int64
 	Description string
+	HasOrdered  bool
 	Created_At  time.Time
 	Updated_At  time.Time
 }
@@ -100,16 +102,17 @@ type ParamFindAllProductOutput struct {
 	Price       float64
 	Quantity    int64
 	Description string
+	HasOrdered  bool
 	Created_At  time.Time
 	Updated_At  time.Time
 }
 
 type ParamsFindAllProductsOutput struct {
-	Products   []*ParamFindAllProductOutput
-	Page       int
-	Limit      int
-	TotalItems int
-	TotalPages int
+	Products   []*ParamFindAllProductOutput `json:"products"`
+	Page       int                          `json:"page"`
+	Limit      int                          `json:"limit"`
+	TotalItems int                          `json:"total_itens"`
+	TotalPages int                          `json:"total_pages"`
 }
 
 type ParamsUpdate struct {
@@ -118,6 +121,7 @@ type ParamsUpdate struct {
 	Price       float64
 	Quantity    int64
 	Description string
+	HasOrdered  bool
 	Updated_At  time.Time
 }
 
@@ -139,6 +143,7 @@ type ParamsUpdateOutput struct {
 	Price       float64
 	Quantity    int64
 	Description string
+	HasOrdered  bool
 	Created_At  time.Time
 	Updated_At  time.Time
 }

@@ -49,6 +49,7 @@ func (s *serviceGRPC) Insert(ctx context.Context, req *proto.ProductInsertReques
 		Price:       res.Price,
 		Quantity:    res.Quantity,
 		Description: res.Description,
+		HasOrdered:  res.HasOrdered,
 		CreatedAt:   timestamppb.New(res.Created_At),
 		UpdatedAt:   timestamppb.New(res.Updated_At),
 	}
@@ -78,6 +79,7 @@ func (s *serviceGRPC) Find(ctx context.Context, req *proto.ProductFindRequest) (
 			Price:       find.Price,
 			Quantity:    find.Quantity,
 			Description: find.Description,
+			HasOrdered:  find.HasOrdered,
 			CreatedAt:   timestamppb.New(find.Created_At),
 			UpdatedAt:   timestamppb.New(find.Updated_At),
 		},
@@ -111,6 +113,7 @@ func (s *serviceGRPC) FindAll(ctx context.Context, req *proto.ProductFindAllRequ
 			Price:       pdt.Price,
 			Quantity:    pdt.Quantity,
 			Description: pdt.Description,
+			HasOrdered:  pdt.HasOrdered,
 			CreatedAt:   timestamppb.New(pdt.Created_At),
 			UpdatedAt:   timestamppb.New(pdt.Updated_At),
 		}
@@ -134,6 +137,7 @@ func (s *serviceGRPC) Update(ctx context.Context, req *proto.ProductUpdateReques
 		Price:       req.Price,
 		Quantity:    req.Quantity,
 		Description: req.Description,
+		HasOrdered:  req.HasOrdered,
 	}
 
 	if err := upd.Validate(); err != nil {
@@ -152,6 +156,7 @@ func (s *serviceGRPC) Update(ctx context.Context, req *proto.ProductUpdateReques
 			Price:       res.Price,
 			Quantity:    res.Quantity,
 			Description: res.Description,
+			HasOrdered:  res.HasOrdered,
 			CreatedAt:   timestamppb.New(res.Created_At),
 			UpdatedAt:   timestamppb.New(res.Updated_At),
 		},

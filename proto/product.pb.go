@@ -29,8 +29,9 @@ type Product struct {
 	Price         float64                `protobuf:"fixed64,3,opt,name=price,proto3" json:"price,omitempty"`
 	Quantity      int64                  `protobuf:"varint,4,opt,name=quantity,proto3" json:"quantity,omitempty"`
 	Description   string                 `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
-	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	HasOrdered    bool                   `protobuf:"varint,6,opt,name=has_ordered,json=hasOrdered,proto3" json:"has_ordered,omitempty"`
+	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,8,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -98,6 +99,13 @@ func (x *Product) GetDescription() string {
 		return x.Description
 	}
 	return ""
+}
+
+func (x *Product) GetHasOrdered() bool {
+	if x != nil {
+		return x.HasOrdered
+	}
+	return false
 }
 
 func (x *Product) GetCreatedAt() *timestamppb.Timestamp {
@@ -449,6 +457,7 @@ type ProductUpdateRequest struct {
 	Price         float64                `protobuf:"fixed64,3,opt,name=price,proto3" json:"price,omitempty"`
 	Quantity      int64                  `protobuf:"varint,4,opt,name=quantity,proto3" json:"quantity,omitempty"`
 	Description   string                 `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
+	HasOrdered    bool                   `protobuf:"varint,6,opt,name=has_ordered,json=hasOrdered,proto3" json:"has_ordered,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -516,6 +525,13 @@ func (x *ProductUpdateRequest) GetDescription() string {
 		return x.Description
 	}
 	return ""
+}
+
+func (x *ProductUpdateRequest) GetHasOrdered() bool {
+	if x != nil {
+		return x.HasOrdered
+	}
+	return false
 }
 
 type ProductUpdateResponse struct {
@@ -654,17 +670,19 @@ var File_product_proto protoreflect.FileDescriptor
 
 const file_product_proto_rawDesc = "" +
 	"\n" +
-	"\rproduct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xf7\x01\n" +
+	"\rproduct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x98\x02\n" +
 	"\aProduct\x12\x0e\n" +
 	"\x02Id\x18\x01 \x01(\tR\x02Id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x14\n" +
 	"\x05price\x18\x03 \x01(\x01R\x05price\x12\x1a\n" +
 	"\bquantity\x18\x04 \x01(\x03R\bquantity\x12 \n" +
-	"\vdescription\x18\x05 \x01(\tR\vdescription\x129\n" +
+	"\vdescription\x18\x05 \x01(\tR\vdescription\x12\x1f\n" +
+	"\vhas_ordered\x18\x06 \x01(\bR\n" +
+	"hasOrdered\x129\n" +
 	"\n" +
-	"created_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
+	"created_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
 	"\n" +
-	"updated_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"~\n" +
+	"updated_at\x18\b \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"~\n" +
 	"\x14ProductInsertRequest\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x14\n" +
 	"\x05price\x18\x02 \x01(\x01R\x05price\x12\x1a\n" +
@@ -686,13 +704,15 @@ const file_product_proto_rawDesc = "" +
 	"\vtotal_pages\x18\x04 \x01(\x05R\n" +
 	"totalPages\x12\x1f\n" +
 	"\vtotal_items\x18\x05 \x01(\x05R\n" +
-	"totalItems\"\x8e\x01\n" +
+	"totalItems\"\xaf\x01\n" +
 	"\x14ProductUpdateRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x14\n" +
 	"\x05price\x18\x03 \x01(\x01R\x05price\x12\x1a\n" +
 	"\bquantity\x18\x04 \x01(\x03R\bquantity\x12 \n" +
-	"\vdescription\x18\x05 \x01(\tR\vdescription\";\n" +
+	"\vdescription\x18\x05 \x01(\tR\vdescription\x12\x1f\n" +
+	"\vhas_ordered\x18\x06 \x01(\bR\n" +
+	"hasOrdered\";\n" +
 	"\x15ProductUpdateResponse\x12\"\n" +
 	"\aproduct\x18\x01 \x01(\v2\b.ProductR\aproduct\"&\n" +
 	"\x14ProductDeleteRequest\x12\x0e\n" +
