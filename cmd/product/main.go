@@ -12,8 +12,12 @@ import (
 	"github.com/aclgo/product/internal/product/usecase"
 	"github.com/aclgo/product/migrations"
 	"github.com/aclgo/product/pkg/grpc_auth"
-	"github.com/aclgo/product/pkg/postgres"
+	post "github.com/aclgo/product/pkg/postgres"
 	"github.com/aclgo/product/proto"
+	"github.com/golang-migrate/migrate/v4"
+	"github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	"github.com/golang-migrate/migrate/v4/source/iofs"
 	"google.golang.org/grpc"
 )
 
@@ -27,17 +31,44 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 	defer cancel()
 
-	db, err := postgres.Connect(ctx, cfg)
+	db, err := post.Connect(ctx, cfg)
 	if err != nil {
 		log.Fatalf("postgres.Connect: %v", err)
 	}
 
-	if cfg.MigrationRunning {
-		migrations.SetAppMigratioFs(db, nil)
-		if err := migrations.Run(); err != nil {
-			log.Fatal(err)
-		}
+	// if cfg.MigrationRunning {
+	// 	migrations.SetAppMigratioFs(db, nil)
+	// 	if err := migrations.Run(); err != nil {
+	// 		log.Fatal(err)
+	// 	}
+	// }
+
+	srcDriver, err := iofs.New(migrations.FsUsingPackageMigrate, ".")
+	if err != nil {
+		log.Fatal(err)
 	}
+
+	dbDriver, err := postgres.WithInstance(db.DB,&postgres.Config{})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	m,err := migrate.NewWithInstance(
+		"iofs",
+		srcDriver,
+		"postgres",
+		dbDriver,
+	)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if err := m.Up(); err != nil && err != migrate.ErrNoChange{
+		log.Fatalf("error up migrate %v",err)
+	}
+
+
 
 	repo := repository.NewPostgresRepo(db)
 

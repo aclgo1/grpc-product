@@ -40,6 +40,9 @@ var (
 	engineMigrationsFS embed.FS
 
 	appMigrationsFS fs.FS
+
+	//go:embed *.sql
+	FsUsingPackageMigrate embed.FS
 )
 
 func SetAppMigratioFs(storageDB *sqlx.DB, fsys fs.FS) {

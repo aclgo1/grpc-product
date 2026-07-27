@@ -21,7 +21,7 @@ func NewPostgresRepo(db *sqlx.DB) *postgresRepository {
 func (p *postgresRepository) Insert(ctx context.Context, ps *models.ParamsInsert) (*models.ParamsInsertResponse, error) {
 	const sql = `INSERT INTO products (product_id, name, price, quantity, description, 
 	created_at, updated_at) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING
-	product_id, name, price, quantity, description, created_at, updated_at`
+	product_id, name, price, quantity, description, has_ordered, created_at, updated_at`
 
 	out := models.ParamsInsertResponse{}
 
@@ -75,18 +75,18 @@ func (p *postgresRepository) FindAllProducts(ctx context.Context, pagination *mo
 	}
 
 	if totalItems == 0 {
-		return nil, nil
+		return nil, errors.New("total items is 0")
 	}
 
 	pages := int(math.Ceil(float64(totalItems) / float64(pagination.Limit)))
 
-	const query = `SELECT * 
+	const query = `SELECT product_id, name, price, quantity, description, has_ordered, created_at, updated_at 
     FROM products p 
     WHERE p.has_ordered = FALSE
     ORDER BY p.product_id DESC
     LIMIT $1 OFFSET $2;`
 
-	rows, err := p.db.QueryxContext(ctx, query)
+	rows, err := p.db.QueryxContext(ctx, query, pagination.Limit, pagination.Offset)
 	if err != nil {
 		return nil, fmt.Errorf("p.db.QueryxContext: %w", err)
 	}

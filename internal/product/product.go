@@ -171,7 +171,7 @@ type Pagination struct {
 }
 
 func (p *Pagination) Validate() error {
-	if p.Limit < 0 {
+	if p.Limit <= 0 {
 		p.Limit = 20
 	}
 
@@ -179,8 +179,8 @@ func (p *Pagination) Validate() error {
 		p.Limit = 100
 	}
 
-	if p.Page <= 0 {
-		p.Page = 0
+	if p.Page < 1 {
+		p.Page = 1
 	}
 
 	return nil

@@ -127,6 +127,8 @@ func (s *serviceGRPC) FindAll(ctx context.Context, req *proto.ProductFindAllRequ
 		TotalPages: int32(all.TotalPages),
 	}
 
+	fmt.Println(all)
+
 	return &resp, nil
 }
 

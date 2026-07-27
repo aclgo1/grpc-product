@@ -2,17 +2,19 @@ version: "3.9"
 
 services:
   app:
-    build: . 
+    build: .
     ports:
       - 50054:50054
     restart: always
+    depends_on:
+      - db
   db:
     image: postgres:15.2-alpine3.17
     container_name: db
-    environment: 
-      POSTGRES_PASSWORD: grpc-product
-      POSTGRES_USER: grpc-product
-      POSTGRES_DB: grpc-product
+    environment:
+      POSTGRES_PASSWORD: api-gateway
+      POSTGRES_USER: api-gateway
+      POSTGRES_DB: api-gateway
     ports:
       - 5432:5432
     healthcheck:
@@ -20,4 +22,3 @@ services:
       interval: 3s
       timeout: 5s
       retries: 5
-    
