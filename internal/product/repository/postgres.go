@@ -134,6 +134,7 @@ func (p *postgresRepository) Update(ctx context.Context, pu *models.ParamsUpdate
 			"has_ordered" = COALESCE($5, "has_ordered"),
 			"updated_at" = COALESCE(NULLIF($6, '')::timestamptz, "updated_at")
 			WHERE product_id = $7
+			AND has_ordered = false
 			RETURNING "product_id",
 			"name", "price", "quantity",
 			"description", has_ordered, "created_at", "updated_at";`
