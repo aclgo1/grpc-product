@@ -30,7 +30,7 @@ type Repository interface {
 type ParamsInsert struct {
 	Id          string
 	Name        string
-	Price       float64
+	Price       int64
 	Quantity    int64
 	Description string
 	Created_At  time.Time
@@ -61,7 +61,7 @@ func (p *ParamsInsert) Validate() error {
 type ParamsInsertOutput struct {
 	Id          string
 	Name        string
-	Price       float64
+	Price       int64
 	Quantity    int64
 	Description string
 	HasOrdered  bool
@@ -88,7 +88,7 @@ func (p *ParamsFind) Validate() error {
 type ParamsFindOutput struct {
 	Id          string
 	Name        string
-	Price       float64
+	Price       int64
 	Quantity    int64
 	Description string
 	HasOrdered  bool
@@ -99,7 +99,7 @@ type ParamsFindOutput struct {
 type ParamFindAllProductOutput struct {
 	Id          string
 	Name        string
-	Price       float64
+	Price       int64
 	Quantity    int64
 	Description string
 	HasOrdered  bool
@@ -118,7 +118,7 @@ type ParamsFindAllProductsOutput struct {
 type ParamsUpdate struct {
 	Id          string
 	Name        string
-	Price       float64
+	Price       int64
 	Quantity    int64
 	Description string
 	HasOrdered  bool
@@ -140,7 +140,7 @@ func (p *ParamsUpdate) Validate() error {
 type ParamsUpdateOutput struct {
 	Id          string
 	Name        string
-	Price       float64
+	Price       int64
 	Quantity    int64
 	Description string
 	HasOrdered  bool

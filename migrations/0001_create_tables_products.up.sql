@@ -1,7 +1,7 @@
 CREATE TABLE products (
     product_id UUID PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
-    price NUMERIC(10,2),
+    price BIGINT NOT NULL DEFAULT 0
     quantity INT,
     description VARCHAR(100) NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),

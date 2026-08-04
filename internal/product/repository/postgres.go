@@ -128,7 +128,7 @@ func (p *postgresRepository) FindAllProducts(ctx context.Context, pagination *mo
 func (p *postgresRepository) Update(ctx context.Context, pu *models.ParamsUpdate) (*models.ParamsUpdateResponse, error) {
 	const sql = `UPDATE "products" SET
 			"name" = COALESCE(NULLIF($1, ''), "name"),
-			"price" = COALESCE(NULLIF($2, 0.0), "price"),
+			"price" = COALESCE(NULLIF($2, 0), "price"),
 			"quantity" = COALESCE(NULLIF($3, 0), "quantity"),
 			"description" = COALESCE(NULLIF($4, ''), "description"),
 			"has_ordered" = COALESCE($5, "has_ordered"),

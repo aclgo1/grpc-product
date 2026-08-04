@@ -5,7 +5,7 @@ import "time"
 type ParamsInsert struct {
 	Id          string    `db:"product_id"`
 	Name        string    `db:"name"`
-	Price       float64   `db:"price"`
+	Price       int64   `db:"price"`
 	Quantity    int64     `db:"quantity"`
 	Description string    `db:"description"`
 	Created_At  time.Time `db:"created_at"`
@@ -15,7 +15,7 @@ type ParamsInsert struct {
 type ParamsInsertResponse struct {
 	Id          string    `db:"product_id"`
 	Name        string    `db:"name"`
-	Price       float64   `db:"price"`
+	Price       int64   `db:"price"`
 	Quantity    int64     `db:"quantity"`
 	Description string    `db:"description"`
 	HasOrdered  bool      `db:"has_ordered"`
@@ -30,7 +30,7 @@ type ParamsFind struct {
 type ParamsFindResult struct {
 	Id          string    `db:"product_id"`
 	Name        string    `db:"name"`
-	Price       float64   `db:"price"`
+	Price       int64   `db:"price"`
 	Quantity    int64     `db:"quantity"`
 	Description string    `db:"description"`
 	HasOrdered  bool      `db:"has_ordered"`
@@ -41,7 +41,7 @@ type ParamsFindResult struct {
 type ParamFindAllProduct struct {
 	Id          string    `db:"product_id"`
 	Name        string    `db:"name"`
-	Price       float64   `db:"price"`
+	Price       int64   `db:"price"`
 	Quantity    int64     `db:"quantity"`
 	Description string    `db:"description"`
 	HasOrdered  bool      `db:"has_ordered"`
@@ -58,7 +58,7 @@ type ParamFindAllProducts struct {
 type ParamsUpdate struct {
 	Id          string
 	Name        string
-	Price       float64
+	Price       int64
 	Quantity    int64
 	Description string
 	HasOrdered  bool `db:"has_ordered"`
@@ -68,7 +68,7 @@ type ParamsUpdate struct {
 type ParamsUpdateResponse struct {
 	Id          string    `db:"product_id"`
 	Name        string    `db:"name"`
-	Price       float64   `db:"price"`
+	Price       int64   `db:"price"`
 	Quantity    int64     `db:"quantity"`
 	Description string    `db:"description"`
 	HasOrdered  bool      `db:"has_ordered"`
