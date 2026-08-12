@@ -48,12 +48,14 @@ func main() {
 		log.Fatal(err)
 	}
 
-	dbDriver, err := postgres.WithInstance(db.DB,&postgres.Config{})
+	dbDriver, err := postgres.WithInstance(db.DB, &postgres.Config{
+		MigrationsTable: "schema_migrations_products",
+	})
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	m,err := migrate.NewWithInstance(
+	m, err := migrate.NewWithInstance(
 		"iofs",
 		srcDriver,
 		"postgres",
@@ -64,11 +66,9 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if err := m.Up(); err != nil && err != migrate.ErrNoChange{
-		log.Fatalf("error up migrate %v",err)
+	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
+		log.Fatalf("error up migrate %v", err)
 	}
-
-
 
 	repo := repository.NewPostgresRepo(db)
 
